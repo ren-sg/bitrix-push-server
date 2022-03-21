@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+  push-server-sub:
+    image: ikarpovich/bitrix-push-server
+    links:
+      - redis
+    networks:
+      # - traefik-net
+      - bitrix
+    volumes:
+      - ./logs/sub:/tmp
+    environment:
+      - REDIS_HOST=redis
+      - LISTEN_HOSTNAME=0.0.0.0
+      - LISTEN_PORT=8010
+      - SECURITY_KEY=testtesttest
+      - MODE=sub
+    # labels:
+    #   - traefik.port=80
+    #   - traefik.protocol=http
+    #   - traefik.frontend.rule=Host:bitrix24-sub.test
+    #   - traefik.docker.network=traefik-net
+      
+  push-server-pub:
+    image: ikarpovich/bitrix-push-server
+    # image: ./push-server
+    links:
+      - redis
+    networks:
+      - bitrix
+    volumes:
+      - ./logs/pub:/tmp
+    environment:
+      - REDIS_HOST=redis
+      - LISTEN_HOSTNAME=0.0.0.0
+      - LISTEN_PORT=8010
+      - SECURITY_KEY=testtesttest
+      - MODE=pub
+
+  redis:
+    image: redis:7.0-rc2-alpine3.15
+    container_name: redis
+    restart: always
+    networks:
+      - bitrix
+
+networks:
+    bitrix:
+        driver: bridge
+        external:
+            name: 3logic_bitrix
