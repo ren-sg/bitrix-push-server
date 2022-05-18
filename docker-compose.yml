@@ -49,4 +49,5 @@ networks:
     bitrix:
         driver: bridge
         external:
-            name: 3logic_bitrix
+            # name: 3logic_bitrix
+            name: 3l_dev_bitrix
